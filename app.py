@@ -22,6 +22,12 @@ uploaded_video = st.file_uploader(
     type=["mp4", "mov", "avi", "mkv", "webm"],
     help="For best performance on a CPU, use a short, low-resolution video.",
 )
+uploaded_model = st.file_uploader(
+    "Upload a custom YOLO model (optional)",
+    type=["pt"],
+    help="Choose a trained Ultralytics YOLO .pt weights file from your computer. "
+    "Leave empty to use the default yolo11n.pt model.",
+)
 confidence = st.slider(
     "Confidence threshold",
     min_value=0.05,
@@ -43,6 +49,10 @@ if uploaded_video is not None and st.button("Start processing", type="primary"):
         input_path = Path(temp_dir) / f"input.{Path(uploaded_video.name).suffix.lstrip('.') or 'mp4'}"
         output_path = Path(temp_dir) / "processed.mp4"
         input_path.write_bytes(uploaded_video.getvalue())
+        model_path = None
+        if uploaded_model is not None:
+            model_path = Path(temp_dir) / "custom_model.pt"
+            model_path.write_bytes(uploaded_model.getvalue())
 
         capture = cv2.VideoCapture(str(input_path))
         if not capture.isOpened():
@@ -74,7 +84,7 @@ if uploaded_video is not None and st.button("Start processing", type="primary"):
                     progress = st.progress(0, text="Loading the YOLO model...")
                     status = st.empty()
                     try:
-                        detector = ObjectDetector()
+                        detector = ObjectDetector(str(model_path) if model_path else "yolo11n.pt")
                         tracker = ObjectTracker(detector)
                         class_track_ids: dict[str, set[int]] = defaultdict(set)
                         processed_frames = 0

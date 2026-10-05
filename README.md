@@ -12,6 +12,7 @@ A beginner-friendly Streamlit app that detects objects in an uploaded video and 
 ## Features
 
 - Upload MP4, MOV, AVI, MKV, or WebM videos.
+- Optionally upload your own Ultralytics YOLO `.pt` weights file from your computer.
 - Adjust the detection confidence threshold.
 - Choose how often YOLO runs; processing every 2nd frame is the default for faster results.
 - Draw bounding boxes, class names, confidence scores, and ByteTrack IDs.
@@ -28,7 +29,7 @@ A beginner-friendly Streamlit app that detects objects in an uploaded video and 
 
 ## YOLO and ByteTrack
 
-YOLO is a family of object-detection models. This app uses the small `yolo11n.pt` nano model, which predicts bounding boxes, class labels, and confidence scores. Ultralytics downloads its model weights the first time the app runs; no API key is needed.
+YOLO is a family of object-detection models. By default, this app uses the small `yolo11n.pt` nano model, which predicts bounding boxes, class labels, and confidence scores. Ultralytics downloads its model weights the first time the app runs; no API key is needed. You can instead select **Upload a custom YOLO model** in the app and choose trained Ultralytics `.pt` weights on your computer. The selected weights are used for that processing run; they are not added permanently to the project.
 
 ByteTrack associates detections between adjacent frames so an object can keep a tracking ID as it moves. The app calls Ultralytics tracking with `bytetrack.yaml` and persistent tracking enabled. IDs are unique within one processing run, not across separate uploads.
 
@@ -56,10 +57,11 @@ Streamlit prints a local address to open in your browser.
 ## How to upload a video
 
 1. Open the app in your browser.
-2. Select a video with the upload control.
-3. Adjust the confidence threshold and inference frequency if needed. Processing every frame is more accurate but slower.
-4. Select **Start processing** and wait for the progress indicator.
-5. View the annotated video and unique track counts by class.
+2. Optionally choose trained Ultralytics `.pt` weights from your computer, or leave the custom model field empty to use the default model.
+3. Select a video with the upload control.
+4. Adjust the confidence threshold and inference frequency if needed. Processing every frame is more accurate but slower.
+5. Select **Start processing** and wait for the progress indicator.
+6. View the annotated video and unique track counts by class.
 
 ## Project structure
 
